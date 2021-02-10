@@ -1,10 +1,11 @@
 #pragma once
-#include <string>
 #include <vector>
-
 #include <opencv2/core/core.hpp>
+
 using namespace std;
 using namespace cv;
+
+const string NEW_GESTURE = "New Gesture (+)";
 
 // for string delimiter
 vector<string> split(string s, string delimiter);
@@ -12,8 +13,8 @@ vector<string> split(string s, string delimiter);
 // for calc euclidean distance
 double euclideanDistance(double m1[7], double m2[7]);
 
-Mat pintarContenidoContorno(Mat image1, Mat image2);
+double logTransform(double momento);
 
-bool saveMoments(double huMomentsNew[7], string fileName = "MomentosDB.txt", double valueAcept = 0.02);
+bool saveDescriptores(double huMomentsNew[7], string fileName, double valueAcept);
 
-string matchMoments(double huMomentsNew[7], string fileName = "MomentosDB.txt", double valueAcept = 0.02);
+string matchDescriptores(double huMomentsNew[7], string fileName, double valueAcept);

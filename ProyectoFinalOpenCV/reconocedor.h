@@ -20,7 +20,11 @@ Mat detectContourVideo(Mat image);
 
 Mat morphOpenCloseVideo(Mat image);
 
-void drawGesture(Mat& image, vector<Point> contour);
+void drawMainPointsGesture(Mat& image, vector<Point> contour);
+
+void calcFourierDescriptor(vector<Point> contour, Point center);
+
+void calacHuMoments(Mat image);
 
 void processVerificacion(Mat& image);
 

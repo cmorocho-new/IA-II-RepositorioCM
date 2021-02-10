@@ -1,9 +1,13 @@
+// Include librarys
 #include <string>
+#include <vector>
 #include <vector>
 #include <iostream>
 #include <fstream>
-
 #include <opencv2/core/core.hpp>
+
+// Include header
+#include "utils.h"
 
 using namespace std;
 using namespace cv;
@@ -24,17 +28,22 @@ vector<string> split(string s, string delimiter) {
 	return res;
 }
 
-double euclideanDistance(double m1[7], double m2[7]) {
+double euclideanDistance(double * m1, double * m2) {
 	double suma = 0.0;
 	for (int i = 0; i < 7; i++) {
 		suma += (m1[i] - m2[i]) * (m1[i] - m2[i]);
 	}
 	return sqrt(suma);
+	// norm(m1, m2, NORM_L2);
 }
 
-string matchMoments(double huMomentsNew[7], string fileName, double valueAcept) {
+double logTransform(double momento) {
+	return -1 * copysign(1.0, momento) * log10(abs(momento));
+}
+
+string matchDescriptores(double huMomentsNew[7], string fileName, double valueAcept) {
 	double huMomentsOld[7];
-	string line, gesture;
+	string line, gesture = NEW_GESTURE;
 	vector<string> atributes;
 	ifstream infile(fileName);
 	if (infile.is_open()) {
@@ -47,17 +56,20 @@ string matchMoments(double huMomentsNew[7], string fileName, double valueAcept) 
 				huMomentsOld[i] = stod(atributes[i]);
 			}
 			// compare two moments
-			if (euclideanDistance(huMomentsNew, huMomentsOld) < valueAcept) {
+			double distancia = euclideanDistance(huMomentsNew, huMomentsOld);
+			cout << "Dis: " << distancia << ";  ";
+			if (distancia < valueAcept) {
 				gesture = atributes[7];
 			}
 		}
+		cout << endl;
 		// close file stream
 		infile.close();
 	}
 	return gesture;
 }
 
-bool saveMoments(double huMomentsNew[7], string fileName, double valueAcept) {
+bool saveDescriptores(double huMomentsNew[7], string fileName, double valueAcept) {
 	double huMomentsOld[7];
 	int next = 1;
 	string line, gesture;
@@ -93,35 +105,4 @@ bool saveMoments(double huMomentsNew[7], string fileName, double valueAcept) {
 		}
 	}
 	return true;
-}
-
-
-Mat pintarContenidoContorno(Mat image1, Mat image2) {
-
-	Vec3b pixel;
-	Mat imageR = image2.clone();
-	for (int i = 0; i < image1.rows; i++) {
-		for (int j = 0; j < image1.cols; j++) {
-			pixel = image1.at<Vec3b>(i, j);
-			if (pixel[0] == 0 && pixel[1] == 0 && pixel[1] == 0) {
-				imageR.at<Vec3b>(i, j) = Vec3b(0, 0, 0);
-			}
-			else {
-				break;
-			}
-		}
-
-		for (int j = image1.cols - 1; j > 0; j--) {
-			pixel = image1.at<Vec3b>(i, j);
-			if (pixel[0] == 0 && pixel[1] == 0 && pixel[1] == 0) {
-				imageR.at<Vec3b>(i, j) = Vec3b(0, 0, 0);
-			}
-			else
-				break;
-		}
-
-	}
-
-	return imageR;
-
 }
