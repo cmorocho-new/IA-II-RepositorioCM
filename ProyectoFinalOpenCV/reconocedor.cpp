@@ -21,6 +21,7 @@ using namespace cv;
 // Types of process active
 int ACTIVE_MODE = RECORD_MODE;
 int ACTIVE_PROCES = HUMOMENTS;
+int BRIGHT_MODE = 0;
 
 // Names of windows
 const string TITLE_WIN_MAIN = "Mode";
@@ -321,6 +322,7 @@ void processVideoCamera() {
 
 		// Add trackbars for Brightness
 		createTrackbar("Technique", TITLE_WIN_MAIN, &ACTIVE_PROCES, 1);
+		createTrackbar("Bright(*)", TITLE_WIN_MAIN, &BRIGHT_MODE, 1);
 		createTrackbar("Brightness", TITLE_WIN_MAIN, &valBright, 100);
 
 		// Add trackbars for Dilation
@@ -338,7 +340,7 @@ void processVideoCamera() {
 		while (true) {
 			video >> imgFrame;
 			resize(imgFrame, imgFrame, Size(), 0.6, 0.6);
-			imgFrame.convertTo(imgFrame, -1, 1, valBright * -1);
+			imgFrame.convertTo(imgFrame, -1, 1, valBright * (BRIGHT_MODE == 0 ? -1 : 1));
 
 			// wait key
 			if (waitKey(25) == 13) {
